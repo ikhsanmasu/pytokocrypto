@@ -69,7 +69,7 @@ class BaseTokoCrypto:
         # accessing account endpoint that required to be SIGNED (apiKey and secretKey)
         if signed:
             request_payload["headers"] = self.__headers
-
+        response = None
         if method == "get":
             response = requests.get(**request_payload)
         elif method == "post":
@@ -78,7 +78,7 @@ class BaseTokoCrypto:
             response = requests.put(**request_payload)
         elif method == "delete":
             response = requests.delete(**request_payload)
-
+        
         response.raise_for_status()
         return response
 
@@ -88,7 +88,7 @@ class BaseTokoCrypto:
         m = hmac.new(self.__secret_key.encode("utf-8"), query_string.encode("utf-8"), hashlib.sha256)
         signature = m.hexdigest()
         return signature
-        
+
     @staticmethod
     def general_check_server_time() -> datetime:
         # Test connectivity to the Rest API and get the current server time.
@@ -101,7 +101,7 @@ class BaseTokoCrypto:
         timestamp = int(response.json()['timestamp']) / 1000
         dt_object = datetime.fromtimestamp(timestamp)
         return dt_object
-        
+
     @staticmethod
     def general_supported_trading_symbol():
         # This endpoint returns all Exchange's supported trading symbol.
@@ -174,13 +174,13 @@ class BaseTokoCrypto:
         :param limit:
         :return: response
         """
-        #Send in a new order.
+
         if self.__symbol_type[symbol] == 1:
             endpoint_url = MARKET_CANDLESTICK_DATA_BINANCE_URL
             symbol = symbol.replace("_", "")
         else:
             endpoint_url = BASE_URL + MARKET_CANDLESTICK_DATA_URL
- 
+
         payload = {
             "symbol": symbol,
             "interval": interval,
@@ -221,7 +221,7 @@ class BaseTokoCrypto:
         MARKET orders using quoteOrderQty specifies the amount the user wants to spend (when buying) of the quote asset;
         the correct quantity will be determined based on the market liquidity and quoteOrderQty.
         :param price: Order book price
-        :param client_id: Client's custom ID for the order, Server does not check it's uniqueness.
+        :param client_id: Client's custom ID for the order, Server does not check its uniqueness.
         Automatically generated if not sent.
         :param stop_price: Used with STOP_LOSS, STOP_LOSS_LIMIT, TAKE_PROFIT, and TAKE_PROFIT_LIMIT orders.
         :param iceberg_qty: Used with LIMIT, STOP_LOSS_LIMIT, and TAKE_PROFIT_LIMIT to create an iceberg order.
@@ -253,7 +253,9 @@ class BaseTokoCrypto:
         # Send in a new order.
         """
         :param order_id: You can check the
-        :param client_id: Client's custom ID for the order, Server does not check it's uniqueness. Automatically generated if not sent.
+        :param client_id: Client's custom ID for the order, Server does not check its uniqueness.
+        Automatically generated if not sent.
+        :param recv_window:
         :return:
         """
         endpoint_url = BASE_URL + ACCOUNT_QUERY_ORDER_URL
@@ -273,6 +275,7 @@ class BaseTokoCrypto:
         # Send in a new order.
         """
         :param order_id: You can check the
+        :param recv_window:
         """
         endpoint_url = BASE_URL + ACCOUNT_CANCEL_ORDER_URL
 
@@ -307,8 +310,10 @@ class BaseTokoCrypto:
         :param start_time:
         :param end_time:
         :param from_id: start order ID the searching to begin with.
-        :param direct: searching direction: prev - in ascending order from the start order ID; next - in descending order from the start order ID
+        :param direct: searching direction: prev - in ascending order from the start order ID;
+        next - in descending order from the start order ID
         :param limit: Default 500; max 1000.
+        :param recv_window:
         :return:
         """
         endpoint_url = BASE_URL + ACCOUNT_ALL_ORDER
@@ -338,10 +343,13 @@ class BaseTokoCrypto:
         :param side:
         :param quantity:
         :param price:
-        :param stop_client_id: Client's custom ID for the stop loss/stop loss limit order, Server does not check it's uniqueness. Automatically generated if not sent.
+        :param stop_client_id: Client's custom ID for the stop loss/stop loss limit order,
+        Server does not check its uniqueness. Automatically generated if not sent.
         :param stop_price: price
-        :param list_client_d: Client's custom ID for the entire orderList, Server does not check it's uniqueness. Automatically generated if not sent.
-        :param limit_client_id: Client's custom ID for the limit order, Server does not check it's uniqueness. Automatically generated if not sent.
+        :param list_client_d: Client's custom ID for the entire orderList, Server does not check its uniqueness.
+        Automatically generated if not sent.
+        :param limit_client_id: Client's custom ID for the limit order, Server does not check its uniqueness.
+        Automatically generated if not sent.
         :param stop_limit_price: Stop limit price
         :param recv_window:
         :return:
@@ -419,7 +427,7 @@ class BaseTokoCrypto:
 
     def wallet_withdraw(self, asset: str, address: str, amount: str, client_id: str = None, network: str = None,
                         address_tag: str = None, recv_window: int = 5000):
-        # Submit a withdraw request.
+        # Submit a withdrawal request.
         endpoint_url = BASE_URL + WALLET_WITHDRAW_URL
 
         timestamp = int(time.time() * 1000)
