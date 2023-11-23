@@ -502,10 +502,10 @@ class BaseTokoCrypto:
     def secret_key(self) -> str:
         return self.__secret_key
 
-    @api_key.setter
+    @secret_key.setter
     def secret_key(self, secret_key: str):
         self.__api_key = secret_key
 
     @property
-    def symbol_type(self) -> str:
+    def symbol_type(self) -> dict:
         return self.__symbol_type
