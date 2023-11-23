@@ -88,8 +88,9 @@ class BaseTokoCrypto:
         m = hmac.new(self.__secret_key.encode("utf-8"), query_string.encode("utf-8"), hashlib.sha256)
         signature = m.hexdigest()
         return signature
-
-    def general_check_server_time(self) -> datetime:
+        
+    @staticmethod
+    def general_check_server_time() -> datetime:
         # Test connectivity to the Rest API and get the current server time.
         endpoint_url = BASE_URL + GENERAL_CHECK_SERVER_TIME_URL
 
@@ -100,8 +101,9 @@ class BaseTokoCrypto:
         timestamp = int(response.json()['timestamp']) / 1000
         dt_object = datetime.fromtimestamp(timestamp)
         return dt_object
-
-    def general_supported_trading_symbol(self):
+        
+    @staticmethod
+    def general_supported_trading_symbol():
         # This endpoint returns all Exchange's supported trading symbol.
         url = BASE_URL + GENERAL_SUPPORTED_TRADING_SYMBOL_URL
         response = requests.get(url=url)
